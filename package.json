@@ -26,6 +26,7 @@
   "dependencies": {
     "director": "^1.2.3",
     "immutable": "~3.2.x",
+    "immutable-cbljs": "^0.0.x",
     "morearty": "^0.7.x",
     "react": "^0.12.x"
   },

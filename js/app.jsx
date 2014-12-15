@@ -2,20 +2,15 @@ var Morearty = require('morearty');
 var React = window.React = require('react/addons');
 var Router = require('director').Router;
 var Immutable = require('immutable');
+var immutableCbljs = require("immutable-cbljs");
 
 var NOW_SHOWING = Object.freeze({ ALL: 'all', ACTIVE: 'active', COMPLETED: 'completed' });
-var currentId = 2;
 var Bootstrap;
 
 // initial state
 var state = {
   nowShowing: 'all',
-  items: [{
-    id: 1,
-    title: 'My first task',
-    completed: false,
-    editing: false
-  }]
+  items: []
 };
 
 var Ctx = Morearty.createContext(state);
@@ -32,10 +27,12 @@ var App = React.createClass({
       '/active': binding.set.bind(binding, 'nowShowing', NOW_SHOWING.ACTIVE),
       '/completed': binding.set.bind(binding, 'nowShowing', NOW_SHOWING.COMPLETED)
     }).init();
+    immutableCbljs.morearty("my-todos", "items", binding);
   },
 
   render: function () {
     var binding = this.getDefaultBinding();
+    // console.info("render items", binding.toJS().items)
     return (
       <section id='todoapp'>
         <Header binding={ binding } />
@@ -59,7 +56,7 @@ var Header = React.createClass({
     if (title) {
       this.getDefaultBinding().update('items', function (todos) { // add new item
         return todos.push(Immutable.Map({
-          id: currentId++,
+          _id: Math.random().toString().slice(2),
           title: title,
           completed: false,
           editing: false
@@ -115,7 +112,7 @@ var TodoList = React.createClass({
 
     var renderTodo = function (item, index) {
       var itemBinding = itemsBinding.sub(index);
-      return isShown(item) ? <TodoItem binding={ itemBinding} key={ itemBinding.toJS('id') } /> : null;
+      return isShown(item) ? <TodoItem binding={ itemBinding} key={ itemBinding.toJS('_id') } /> : null;
     };
 
     var allCompleted = !items.find(function (item) {
